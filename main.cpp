@@ -1,38 +1,54 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
 #include <iostream>
-#include <list>
+#include <map>
 
 using namespace std;
 
-class MyClass{
+class MyClass {
 private:
     int x;
-public:
-    MyClass(int x);
+    int instance;
+    static int next_instance;
     
-    MyClass(const MyClass& old)
-    {
-        std::cout << "Copying... "<<&old<<" into "<<this<<"\n";
-        *this = old;
+public:
+    MyClass() {
+        this->instance = next_instance++;
+        cout<<"#"<<this->instance<<"     "<<this<<" created with empty constructor"<<endl;
     }
     
-    ~MyClass();
+    //Override copy constructor
+    MyClass(const MyClass & old) {
+        this->x = old.x;
+        this->instance = next_instance++;
+        cout<<"#"<<this->instance<<" x:"<<this->x<<" "<<this<<" copied from #"<<
+        old.instance<<" "<<&old<<endl;
+    }
+    
+    MyClass(int x) {
+        this->x = x;
+        this->instance = next_instance++;
+        cout<<"#"<<this->instance<<" x:"<<this->x<<" "<<this<<" created"<<endl;
+    }
+    
+    ~MyClass() {
+        cout<<"#"<<this->instance<<" x:"<<this->x<<" "<<this<<" destroyed"<<endl;
+    }
 };
 
-MyClass::MyClass(int x){
-    this->x = x;
-    cout<<"Class "<<this->x<<" at "<<this<<" was created"<<endl;
-}
-
-MyClass::~MyClass(){
-    cout<<"Class "<<this->x<<" at "<<this<<" has been destroyed"<<endl;
-}
+int MyClass::next_instance = 1;
 
 int main()
 {
-    list<MyClass> myList;
-    myList.push_back(MyClass(2));
-    myList.push_back(MyClass(7));
-    for (auto it = myList.begin(); myList.end() != it; it++)
-        cout<<&(*it)<<endl;
+    map<int, MyClass> m;
+    m.emplace(1, MyClass(1));
+    m[2] = MyClass(2);
+
     return 0;
 }
